@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Missões Secretas</title>
+
+<style>
+
+body{
+background:linear-gradient(180deg,#ffc0d6,#ffd6e7);
+color:#ff2e86;
+font-family:monospace;
+text-align:center;
+padding-top:80px;
+overflow:hidden;
+}
+
+
+input,button{
+padding:10px;
+font-size:16px;
+margin:5px;
+border-radius:8px;
+border:none;
+}
+
+button{
+background:#ff6aa9;
+color:white;
+cursor:pointer;
+}
+
+#game{
+display:none;
+}
+
+
+#final{
+text-align:center;
+}
+
+#titulo{
+font-size:60px;
+margin-top:40px;
+animation:brilho 2s infinite alternate;
+}
+
+@keyframes brilho{
+from{ text-shadow:0 0 5px #ff2e86 }
+to{ text-shadow:0 0 25px #ff2e86 }
+}
+
+#mensagemFinal{
+margin-top:25px;
+font-size:24px;
+opacity:0;
+}
+
+#fotoFinal{
+margin-top:40px;
+width:320px;
+border-radius:15px;
+box-shadow:0 0 25px rgba(0,0,0,0.4);
+}
+
+
+#confete{
+position:fixed;
+top:0;
+left:0;
+pointer-events:none;
+}
+
+
+.flores{
+position:fixed;
+bottom:-50px;
+font-size:26px;
+animation:subir 10s linear infinite;
+opacity:0.8;
+}
+
+@keyframes subir{
+
+0%{
+transform:translateY(0) rotate(0deg);
+opacity:0;
+}
+
+20%{
+opacity:1;
+}
+
+100%{
+transform:translateY(-110vh) rotate(360deg);
+opacity:0;
+}
+
+}
+
+
+.coracao{
+position:fixed;
+bottom:-40px;
+font-size:22px;
+animation:subirCoracao 8s linear infinite;
+opacity:0.8;
+}
+
+@keyframes subirCoracao{
+
+0%{
+transform:translateY(0);
+opacity:0;
+}
+
+20%{
+opacity:1;
+}
+
+100%{
+transform:translateY(-110vh);
+opacity:0;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="floresContainer"></div>
+<div id="coracoesContainer"></div>
+
+<h2>🔒 Sistema Secreto</h2>
+
+<div id="login">
+
+<p>Digite a senha</p>
+
+<input type="password" id="senha">
+
+<button onclick="entrar()">Entrar</button>
+
+</div>
+
+<div id="game">
+
+<h3 id="contador"></h3>
+
+<div id="missao"></div>
+
+</div>
+
+<canvas id="confete"></canvas>
+
+<script>
+
+
+function entrar(){
+
+let senha=document.getElementById("senha").value;
+
+if(senha==="aniversario"){
+
+document.getElementById("login").style.display="none";
+document.getElementById("game").style.display="block";
+
+iniciar();
+
+}else{
+
+alert("Senha incorreta");
+
+}
+
+}
+
+
+function iniciar(){
+
+let dias=0;
+
+document.getElementById("contador").innerText="Faltam "+dias+" dias";
+
+let area=document.getElementById("missao");
+
+if(dias<=0){
+
+area.innerHTML=`
+
+<div id="final">
+
+<h1 id="titulo"></h1>
+
+<p id="mensagemFinal"></p>
+
+<img id="fotoFinal" src="foto.jpg">
+
+</div>
+
+`;
+
+animarTitulo();
+fraseFinal();
+iniciarConfete();
+
+}
+
+}
+
+
+function animarTitulo(){
+
+let titulo="🎉 FELIZ ANIVERSÁRIO 🎉";
+
+let i=0;
+
+let intervalo=setInterval(()=>{
+
+document.getElementById("titulo").innerHTML+=titulo[i];
+
+i++;
+
+if(i>=titulo.length){
+clearInterval(intervalo);
+}
+
+},100);
+
+}
+
+
+function fraseFinal(){
+
+let frase="Você realizou todas as provas e chegou ao fim. Enfim chegou o grande dia, e em meio a tantos textos e felicitações, aqui eu também te desejo um feliz aniversário. Resolvi fazer esse site simples como uma forma diferente de te parabenizar e mostrar o quanto você é especial e importante pra mim. Espero que tenha gostado pois fiz cada detalhe pensando em você. Parabéns❤️";
+
+let i=0;
+
+let texto=document.getElementById("mensagemFinal");
+
+texto.style.opacity=1;
+
+let intervalo=setInterval(()=>{
+
+texto.innerHTML+=frase[i];
+
+i++;
+
+if(i>=frase.length){
+clearInterval(intervalo);
+}
+
+},60);
+
+}
+
+
+function iniciarConfete(){
+
+let canvas=document.getElementById("confete");
+
+let ctx=canvas.getContext("2d");
+
+canvas.width=window.innerWidth;
+
+canvas.height=window.innerHeight;
+
+let confetes=[];
+
+for(let i=0;i<150;i++){
+
+confetes.push({
+
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+r:Math.random()*6+2,
+d:Math.random()*100
+
+});
+
+}
+
+function draw(){
+
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+ctx.fillStyle="#ff6aa9";
+
+confetes.forEach(c=>{
+
+ctx.beginPath();
+ctx.arc(c.x,c.y,c.r,0,Math.PI*2);
+ctx.fill();
+
+c.y+=2;
+
+if(c.y>canvas.height){
+c.y=0;
+}
+
+});
+
+requestAnimationFrame(draw);
+
+}
+
+draw();
+
+}
+
+
+function criarFlores(){
+
+let container=document.getElementById("floresContainer");
+
+setInterval(()=>{
+
+let flor=document.createElement("div");
+
+flor.className="flores";
+flor.innerText="🌸";
+
+flor.style.left=Math.random()*100+"vw";
+
+flor.style.fontSize=(20+Math.random()*20)+"px";
+
+flor.style.animationDuration=(6+Math.random()*6)+"s";
+
+container.appendChild(flor);
+
+setTimeout(()=>{
+
+flor.remove();
+
+},12000);
+
+},500);
+
+}
+
+criarFlores();
+
+
+function criarCoracoes(){
+
+let container=document.getElementById("coracoesContainer");
+
+setInterval(()=>{
+
+let c=document.createElement("div");
+
+c.className="coracao";
+
+c.innerText="💖";
+
+c.style.left=Math.random()*100+"vw";
+
+c.style.fontSize=(18+Math.random()*18)+"px";
+
+c.style.animationDuration=(5+Math.random()*4)+"s";
+
+container.appendChild(c);
+
+setTimeout(()=>{
+
+c.remove();
+
+},9000);
+
+},700);
+
+}
+
+criarCoracoes();
+
+</script>
+
+</body>
+</html>
